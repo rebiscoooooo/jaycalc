@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCalc - CLSU</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        :root[data-bs-theme="light"] {
+            --bs-body-bg: #f5f2eb; 
+            --bs-body-color: #3e2723;
+            --coffee-primary: #6f4e37;
+            --coffee-secondary: #c29b76; 
+            --coffee-card-bg: #ffffff;
+            --coffee-input-bg: #fdfcfa;
+            --coffee-input-border: #e6e0d4;
+            --coffee-gradient: linear-gradient(135deg, #f5f2eb 0%, #e8dfc8 100%);
+        }
+
+        :root[data-bs-theme="dark"] {
+            --bs-body-bg: #211812;
+            --bs-body-color: #f0e6d8;
+            --coffee-primary: #d6ad85;
+            --coffee-secondary: #704b33; 
+            --coffee-card-bg: #2d211a;
+            --coffee-input-bg: #241913;
+            --coffee-input-border: #3d2f25;
+            --coffee-gradient: linear-gradient(135deg, #211812 0%, #17100b 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--coffee-gradient);
+            background-attachment: fixed;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .bg-coffee-card {
+            background-color: var(--coffee-card-bg);
+            border: 1px solid var(--coffee-input-border);
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .text-coffee-primary {
+            color: var(--coffee-primary) !important;
+            transition: color 0.4s ease;
+        }
+
+        .btn-coffee {
+            background-color: var(--coffee-primary);
+            color: var(--bs-body-bg);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-coffee:hover {
+            background-color: var(--coffee-secondary);
+            color: var(--bs-body-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .coffee-input {
+            background-color: var(--coffee-input-bg) !important;
+            color: var(--bs-body-color) !important;
+            border: 1px solid var(--coffee-input-border);
+            transition: all 0.3s ease;
+        }
+
+        .coffee-input:focus {
+            border-color: var(--coffee-primary);
+            box-shadow: 0 0 0 0.25rem rgba(111, 78, 55, 0.15);
+        }
+
+        .status-badge {
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--coffee-secondary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--coffee-primary); }
+
+        .fade-in-row { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .display-container {
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="min-vh-100 d-flex flex-column justify-content-center py-5">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+                
+                <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+                    <h2 class="fw-bold m-0 d-flex align-items-center gap-2 text-coffee-primary">
+                        <i class="bi bi-cup-hot-fill fs-3"></i> GCalc
+                    </h2>
+                    
+                    <button class="btn rounded-pill d-flex align-items-center gap-2 border-0 shadow-sm bg-coffee-card text-coffee-primary px-3 py-2" id="themeToggle">
+                        <i class="bi bi-moon-stars-fill" id="themeIcon"></i> 
+                        <span class="fw-semibold fs-6">Theme</span>
+                    </button>
+                </div>
+
+                <div class="card shadow-sm rounded-4 mb-4 bg-coffee-card">
+                    <div class="card-body p-4 p-md-5 text-center display-container">
+                        <h1 id="resultDisplay" class="display-1 fw-bolder text-coffee-primary mb-3 opacity-50" style="letter-spacing: -3px; transition: opacity 0.3s;">
+                            1.0000
+                        </h1>
+                        <div id="academicStatus" class="status-badge bg-secondary bg-opacity-10 text-muted d-inline-block">
+                            <i class="bi bi-info-circle me-1"></i> Enter grades to evaluate
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm rounded-4 bg-coffee-card">
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <div id="inputsContainer" class="d-flex flex-column gap-3">
+                            </div>
+
+                        <button id="addBtn" class="btn btn-coffee w-100 rounded-3 py-3 mt-4 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 fs-5">
+                            <i class="bi bi-plus-circle"></i> Add Subject
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed-bottom p-3 text-center pointer-events-none">
+        <a href="https://jrsdg-portfolio.unaux.com/" target="_blank" class="text-decoration-none text-muted fw-medium pointer-events-auto opacity-75">
+            © Jay-ar S. De Guzman. ☕
+        </a>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let inputList = [{ id: Date.now(), grades: 0.0, units: 0 }];
+        let isDark = false;
+
+        const htmlDoc = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const inputsContainer = document.getElementById('inputsContainer');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const academicStatus = document.getElementById('academicStatus');
+        const addBtn = document.getElementById('addBtn');
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            htmlDoc.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            themeIcon.className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        });
+
+        addBtn.addEventListener('click', () => {
+            inputList.push({ id: Date.now(), grades: 0.0, units: 0 });
+            render();
+        });
+
+        window.updateInput = (id, field, value) => {
+            const index = inputList.findIndex(item => item.id === id);
+            if (index !== -1) {
+                inputList[index][field] = parseFloat(value) || 0;
+                calculateGWA();
+            }
+        };
+
+        window.deleteInput = (id) => {
+            inputList = inputList.filter(item => item.id !== id);
+            render();
+        };
+
+        function calculateGWA() {
+            let totalGrades = 0;
+            let totalUnits = 0;
+
+            inputList.forEach(input => {
+                if(input.grades > 0 && input.units > 0) {
+                    totalGrades += (input.grades * input.units);
+                    totalUnits += input.units;
+                }
+            });
+
+            if (totalUnits === 0) {
+                resultDisplay.innerText = "1.0000";
+                resultDisplay.classList.add('opacity-50');
+                academicStatus.className = "status-badge bg-secondary bg-opacity-10 text-muted d-inline-block";
+                academicStatus.innerHTML = '<i class="bi bi-info-circle me-1"></i> Enter grades to evaluate';
+                return;
+            }
+
+            resultDisplay.classList.remove('opacity-50');
+            const computedResult = totalGrades / totalUnits;
+            const exactGWA = Math.round(computedResult * 10000) / 10000;
+            
+            resultDisplay.innerText = exactGWA.toFixed(4);
+
+            let statusText = "";
+            let badgeClass = "";
+
+            if (totalUnits < 12) {
+                statusText = '<i class="bi bi-exclamation-triangle-fill me-1"></i> No Academic Distinction (Underload)';
+                badgeClass = 'bg-warning text-dark';
+            } else if (exactGWA >= 1.00 && exactGWA <= 1.45) {
+                statusText = '<i class="bi bi-trophy-fill me-1"></i> University Scholar';
+                badgeClass = 'bg-success text-white shadow-sm';
+            } else if (exactGWA > 1.45 && exactGWA <= 1.75) {
+                statusText = '<i class="bi bi-award-fill me-1"></i> College Scholar';
+                badgeClass = 'bg-primary text-white shadow-sm';
+            } else if (exactGWA > 1.75 && exactGWA <= 2.00) {
+                statusText = '<i class="bi bi-star-fill me-1"></i> Dean\'s Lister';
+                badgeClass = 'bg-info text-dark shadow-sm';
+            } else if (exactGWA > 2.00 && exactGWA <= 3.00) {
+                statusText = '<i class="bi bi-hand-thumbs-up-fill me-1"></i> Good Standing';
+                badgeClass = 'bg-secondary text-white';
+            } else {
+                statusText = '<i class="bi bi-x-octagon-fill me-1"></i> Needs Improvement';
+                badgeClass = 'bg-danger text-white shadow-sm';
+            }
+
+            academicStatus.className = `status-badge d-inline-block ${badgeClass}`;
+            academicStatus.innerHTML = statusText;
+        }
+
+        function render() {
+            inputsContainer.innerHTML = '';
+            
+            inputList.forEach((input) => {
+                const row = document.createElement('div');
+                row.className = "d-flex align-items-center gap-2 gap-md-3 fade-in-row";
+                
+                row.innerHTML = `
+                    <select onchange="updateInput(${input.id}, 'grades', this.value)" 
+                            class="form-select form-select-lg coffee-input fw-semibold flex-grow-1 rounded-3">
+                        <option value="0" ${input.grades === 0 ? 'selected' : ''} disabled>Select Grade</option>
+                        <option value="1.00" ${input.grades === 1.00 ? 'selected' : ''}>1.00</option>
+                        <option value="1.25" ${input.grades === 1.25 ? 'selected' : ''}>1.25</option>
+                        <option value="1.50" ${input.grades === 1.50 ? 'selected' : ''}>1.50</option>
+                        <option value="1.75" ${input.grades === 1.75 ? 'selected' : ''}>1.75</option>
+                        <option value="2.00" ${input.grades === 2.00 ? 'selected' : ''}>2.00</option>
+                        <option value="2.25" ${input.grades === 2.25 ? 'selected' : ''}>2.25</option>
+                        <option value="2.50" ${input.grades === 2.50 ? 'selected' : ''}>2.50</option>
+                        <option value="2.75" ${input.grades === 2.75 ? 'selected' : ''}>2.75</option>
+                        <option value="3.00" ${input.grades === 3.00 ? 'selected' : ''}>3.00</option>
+                        <option value="4.00" ${input.grades === 4.00 ? 'selected' : ''}>4.00</option>
+                        <option value="5.00" ${input.grades === 5.00 ? 'selected' : ''}>5.00</option>
+                    </select>
+
+                    <input type="number" min="1" max="12" placeholder="Units" 
+                           onkeyup="updateInput(${input.id}, 'units', this.value)" 
+                           onchange="updateInput(${input.id}, 'units', this.value)"
+                           value="${input.units || ''}"
+                           class="form-control form-control-lg coffee-input fw-semibold rounded-3 text-center" style="width: 100px;">
+                    
+                    ${inputList.length > 1 ? `
+                        <button onclick="deleteInput(${input.id})" class="btn btn-link text-danger fs-4 p-0 ms-1 text-decoration-none opacity-75 hover-opacity-100 transition-all" title="Remove">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    ` : `
+                        <div style="width: 32px; margin-left: 0.25rem;"></div>
+                    `}
+                `;
+                inputsContainer.appendChild(row);
+            });
+            
+            calculateGWA();
+        }
+
+        render();
+    </script>
+</body>
+</html>
