@@ -126,7 +126,7 @@
                 <div class="card shadow-sm rounded-4 mb-4 bg-coffee-card">
                     <div class="card-body p-4 p-md-5 text-center display-container">
                         <h1 id="resultDisplay" class="display-1 fw-bolder text-coffee-primary mb-3 opacity-50" style="letter-spacing: -3px; transition: opacity 0.3s;">
-                            1.0000
+                            1
                         </h1>
                         <div id="academicStatus" class="status-badge bg-secondary bg-opacity-10 text-muted d-inline-block">
                             <i class="bi bi-info-circle me-1"></i> Enter grades to evaluate
@@ -206,7 +206,7 @@
             });
 
             if (totalUnits === 0) {
-                resultDisplay.innerText = "1.0000";
+                resultDisplay.innerText = "1";
                 resultDisplay.classList.add('opacity-50');
                 academicStatus.className = "status-badge bg-secondary bg-opacity-10 text-muted d-inline-block";
                 academicStatus.innerHTML = '<i class="bi bi-info-circle me-1"></i> Enter grades to evaluate';
@@ -215,9 +215,11 @@
 
             resultDisplay.classList.remove('opacity-50');
             const computedResult = totalGrades / totalUnits;
-            const exactGWA = Math.round(computedResult * 10000) / 10000;
+            const exactGWA = Math.round(computedResult * 100) / 100;
             
-            resultDisplay.innerText = exactGWA.toFixed(4);
+            // Decimal display logic: Show no decimals if whole number, else show 2 decimals
+            let displayValue = (exactGWA % 1 === 0) ? exactGWA.toFixed(0) : exactGWA.toFixed(2);
+            resultDisplay.innerText = displayValue;
 
             let statusText = "";
             let badgeClass = "";
